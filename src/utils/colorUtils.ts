@@ -400,58 +400,38 @@ function findValleys(peaks: LocalPeak[], histogram: number[]): void {
   }
 }
 
-/** 合并相邻波峰（基于谷值比例和色相距离） */
+/** 合并相邻波峰（优先合并权重最小的波峰） */
 function mergeAdjacentPeaks(
   peaks: LocalPeak[],
-  histogram: number[],
+  _histogram: number[],
   maxPeaks: number
 ): void {
-  const n = histogram.length;
-
-  const hueDistance = (idx1: number, idx2: number): number => {
-    const diff = Math.abs(idx2 - idx1);
-    return Math.min(diff, n - diff);
-  };
-
   while (peaks.length > maxPeaks) {
-    let bestIdx = -1,
-      bestScore = -1;
+    // 找权重最小的波峰
+    let minIdx = 0;
+    let minValue = peaks[0].value;
 
-    for (let i = 0; i < peaks.length; i++) {
-      const curr = peaks[i];
-      const next = peaks[(i + 1) % peaks.length];
-
-      const valleyValue = histogram[curr.rightValley];
-      const minPeakValue = Math.min(curr.value, next.value);
-
-      if (minPeakValue > 0) {
-        const valleyRatio = valleyValue / minPeakValue;
-        const distance = hueDistance(curr.index, next.index);
-        const distanceFactor = 1 - distance / (n / 2);
-        const score = valleyRatio * (0.5 + 0.5 * distanceFactor);
-
-        if (score > bestScore) {
-          bestScore = score;
-          bestIdx = i;
-        }
+    for (let i = 1; i < peaks.length; i++) {
+      if (peaks[i].value < minValue) {
+        minValue = peaks[i].value;
+        minIdx = i;
       }
     }
 
-    if (bestIdx >= 0) {
-      const curr = peaks[bestIdx];
-      const nextIdx = (bestIdx + 1) % peaks.length;
-      const next = peaks[nextIdx];
+    // 将最小波峰合并到相邻的较大波峰
+    const curr = peaks[minIdx];
+    const prevIdx = (minIdx - 1 + peaks.length) % peaks.length;
+    const nextIdx = (minIdx + 1) % peaks.length;
+    const prev = peaks[prevIdx];
+    const next = peaks[nextIdx];
 
-      if (curr.value >= next.value) {
-        curr.rightValley = next.rightValley;
-        peaks.splice(nextIdx, 1);
-      } else {
-        next.leftValley = curr.leftValley;
-        peaks.splice(bestIdx, 1);
-      }
+    // 合并到相邻两个中更大的那个
+    if (prev.value >= next.value) {
+      prev.rightValley = curr.rightValley;
     } else {
-      break;
+      next.leftValley = curr.leftValley;
     }
+    peaks.splice(minIdx, 1);
   }
 }
 
@@ -517,7 +497,7 @@ function mergeSimilarColors(
     let target: HuePeak | null = null;
     for (const existing of merged) {
       // 色相差异太大则不合并（超过 30° 不合并）
-      if (hueDiff(peak.peakHue, existing.peakHue) > 30) continue;
+      if (hueDiff(peak.peakHue, existing.peakHue) > 60) continue;
 
       const [er, eg, eb] = hslToRgb(
         existing.peakHue,
@@ -543,30 +523,51 @@ function mergeSimilarColors(
         s2: number,
         e2: number
       ): [number, number] => {
-        // 将范围转换为点集合，考虑循环
+        // 计算范围的跨度
+        const getSpan = (s: number, e: number): number => {
+          return s <= e ? e - s : 360 - s + e;
+        };
+
+        // 检查点是否在范围内
         const inRange = (h: number, s: number, e: number): boolean => {
           if (s <= e) return h >= s && h <= e;
           return h >= s || h <= e;
         };
 
-        // 检查两个范围是否已经包含对方
+        // 检查范围1是否完全包含范围2
         const range1Contains2 = inRange(s2, s1, e1) && inRange(e2, s1, e1);
-        const range2Contains1 = inRange(s1, s2, e2) && inRange(e1, s2, e2);
-
         if (range1Contains2) return [s1, e1];
+
+        // 检查范围2是否完全包含范围1
+        const range2Contains1 = inRange(s1, s2, e2) && inRange(e1, s2, e2);
         if (range2Contains1) return [s2, e2];
 
-        // 尝试两种连接方式，选择范围更小的
-        // 方式1: s1 -> e2 (s1 在左，e2 在右)
-        // 方式2: s2 -> e1 (s2 在左，e1 在右)
-        const span1 = s1 <= e2 ? e2 - s1 : 360 - s1 + e2;
-        const span2 = s2 <= e1 ? e1 - s2 : 360 - s2 + e1;
+        // 四种可能的合并方式，找跨度最小的
+        const candidates: [number, number, number][] = [
+          [s1, e2, getSpan(s1, e2)], // s1 -> e2
+          [s2, e1, getSpan(s2, e1)], // s2 -> e1
+          [s1, e1, getSpan(s1, e1)], // 保持范围1
+          [s2, e2, getSpan(s2, e2)], // 保持范围2
+        ];
 
-        if (span1 <= span2) {
-          return [s1, e2];
-        } else {
-          return [s2, e1];
+        // 但必须包含两个范围的所有端点
+        const validCandidates = candidates.filter(([newS, newE]) => {
+          return (
+            inRange(s1, newS, newE) &&
+            inRange(e1, newS, newE) &&
+            inRange(s2, newS, newE) &&
+            inRange(e2, newS, newE)
+          );
+        });
+
+        if (validCandidates.length === 0) {
+          // 如果没有有效候选，返回最大范围
+          return [Math.min(s1, s2), Math.max(e1, e2)];
         }
+
+        // 选择跨度最小的
+        validCandidates.sort((a, b) => a[2] - b[2]);
+        return [validCandidates[0][0], validCandidates[0][1]];
       };
 
       const [newStart, newEnd] = mergeHueRanges(
