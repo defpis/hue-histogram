@@ -1,0 +1,269 @@
+* {
+  box-sizing: border-box;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* 动态渐变背景 */
+.background-gradient {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background: radial-gradient(
+      ellipse 80% 50% at 20% 40%,
+      rgba(120, 0, 255, 0.15) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 60% 40% at 80% 20%,
+      rgba(255, 0, 120, 0.12) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 50% 60% at 60% 80%,
+      rgba(0, 200, 255, 0.1) 0%,
+      transparent 50%
+    ),
+    linear-gradient(180deg, #0a0a12 0%, #12121f 50%, #0a0a12 100%);
+}
+
+/* 噪点纹理 */
+.background-noise {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 300;
+  margin: 0 0 0.5rem;
+  color: #fff;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.title-icon {
+  font-size: 2rem;
+  background: linear-gradient(
+    135deg,
+    #ff6b6b,
+    #feca57,
+    #48dbfb,
+    #ff9ff3,
+    #ff6b6b
+  );
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-shift 8s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+  font-weight: 300;
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  max-width: 1400px;
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+@media (max-width: 1024px) {
+  .main {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.left-panel {
+  flex: 1;
+  min-width: 0;
+}
+
+.right-panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .left-panel,
+  .right-panel {
+    width: 100%;
+    max-width: 700px;
+  }
+}
+
+.image-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.image-label {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  letter-spacing: 0.05em;
+}
+
+.image-wrapper {
+  width: 100%;
+  background: repeating-conic-gradient(
+      rgba(255, 255, 255, 0.04) 0% 25%,
+      rgba(0, 0, 0, 0.15) 0% 50%
+    )
+    50% / 12px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.image-wrapper img,
+.downsampled-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.9rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.image-size {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+}
+
+.histogram-section {
+  width: 100%;
+}
+
+/* 主色调色块 */
+.peaks-colors {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.color-swatches {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.color-swatch {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.color-swatch:hover {
+  transform: scale(1.1);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 4rem 2rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.footer {
+  margin-top: 3rem;
+  text-align: center;
+}
+
+.footer p {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.3);
+  margin: 0;
+  }
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .app {
+    padding: 1.5rem 1rem;
+}
+
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
+  }
+
+  .main {
+    gap: 2rem;
+  }
+}

@@ -1,0 +1,219 @@
+.histogram-container {
+  width: 100%;
+  padding: 1.5rem;
+  background: rgba(15, 15, 25, 0.8);
+  border-radius: 16px;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 25px 50px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.histogram-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.histogram-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.05em;
+}
+
+.peak-count {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+}
+
+.threshold-controls {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.threshold-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.threshold-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+  white-space: nowrap;
+}
+
+.threshold-value {
+  color: rgba(255, 200, 100, 0.9);
+  font-weight: 500;
+}
+
+.threshold-value.peak {
+  color: rgba(100, 200, 255, 0.9);
+}
+
+.threshold-slider {
+  width: 100px;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.threshold-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background: rgba(255, 200, 100, 0.9);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.threshold-slider.peak-slider::-webkit-slider-thumb {
+  background: rgba(100, 200, 255, 0.9);
+}
+
+.threshold-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.threshold-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: rgba(255, 200, 100, 0.9);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.threshold-slider.peak-slider::-moz-range-thumb {
+  background: rgba(100, 200, 255, 0.9);
+}
+
+.histogram-svg-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 900 / 280;
+}
+
+.histogram-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.histogram-svg rect {
+  transition: opacity 0.1s ease;
+}
+
+.histogram-svg rect:hover {
+  opacity: 0.85;
+}
+
+/* Tooltip */
+.histogram-tooltip {
+  position: absolute;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(20, 20, 30, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  white-space: nowrap;
+}
+
+.tooltip-color {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.tooltip-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+}
+
+.tooltip-hue {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+.tooltip-name {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.tooltip-value {
+  color: rgba(255, 255, 255, 0.5);
+  padding-left: 0.25rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Peaks Info */
+.peaks-info {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.peaks-count {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+}
+
+.peaks-colors {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.peak-color-swatch {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.peak-color-swatch:hover {
+  transform: scale(1.1);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.swatch-index {
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+}
