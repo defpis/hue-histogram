@@ -43,10 +43,7 @@ export function HueHistogram({
 
   const barWidth = chartWidth / bins;
 
-  const handleMouseMove = (
-    e: React.MouseEvent<SVGSVGElement>,
-    index: number
-  ) => {
+  const handleMouseMove = (e: React.MouseEvent, index: number) => {
     const hue = index;
     const value = histogram[index];
     const colorName = getHueColorName(hue);
@@ -189,7 +186,9 @@ export function HueHistogram({
 
           {/* X 轴刻度 */}
           <g
-            transform={`translate(${padding.left}, ${padding.top + chartHeight + 5})`}
+            transform={`translate(${padding.left}, ${
+              padding.top + chartHeight + 5
+            })`}
           >
             {[0, 60, 120, 180, 240, 300, 360].map((hue) => {
               const x = (hue / 360) * chartWidth;
@@ -255,7 +254,9 @@ export function HueHistogram({
                   key={index}
                   className="peak-color-swatch"
                   style={{ backgroundColor: color }}
-                  title={`H:${peak.peakHue}° S:${Math.round(peak.avgSaturation)}% L:${Math.round(peak.avgLightness)}%`}
+                  title={`H:${peak.peakHue}° S:${Math.round(
+                    peak.avgSaturation
+                  )}% L:${Math.round(peak.avgLightness)}%`}
                 >
                   <span className="swatch-index">{index + 1}</span>
                 </div>
