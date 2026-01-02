@@ -5,8 +5,7 @@
   border-radius: 16px;
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow:
-    0 25px 50px rgba(0, 0, 0, 0.5),
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
@@ -186,10 +185,11 @@
 }
 
 .peaks-colors {
+  width: 100%;
   display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  flex-direction: row;
   justify-content: center;
+  gap: 0.5rem;
 }
 
 .peak-color-swatch {

@@ -16,7 +16,9 @@ function App() {
   const [imageUrl, setImageUrl] = useState<string>(DEFAULT_IMAGE);
   const [downsampledUrl, setDownsampledUrl] = useState<string>("");
   const [histogram, setHistogram] = useState<number[]>([]);
-  const [histogramData, setHistogramData] = useState<HistogramData | null>(null);
+  const [histogramData, setHistogramData] = useState<HistogramData | null>(
+    null
+  );
   const [peaks, setPeaks] = useState<HuePeak[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [imageSize, setImageSize] = useState({ original: "", downsampled: "" });
@@ -161,7 +163,7 @@ function App() {
             <span className="image-size">{imageSize.downsampled}</span>
           </div>
 
-          {peaks.length > 0 && (
+          {/* {peaks.length > 0 && (
             <div className="peaks-colors">
               <h3 className="image-label">提取的主色调</h3>
               <div className="color-swatches">
@@ -177,7 +179,7 @@ function App() {
                 ))}
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </main>
 
